@@ -103,14 +103,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     private void getActivityType(){
-        //TODO: change to relevant permissions
-//        if (ActivityCompat.checkSelfPermission(this, com.google.android.gms.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this,
-//
-//                    new String[]{com.google.android.gms.permission.ACTIVITY_RECOGNITION}, ACTIVITY_CODE);
-//            return;
-//        }
-
         Awareness.SnapshotApi.getDetectedActivity(mGoogleApiClient)
                 .setResultCallback(new ResultCallback<DetectedActivityResult>() {
                     @Override
