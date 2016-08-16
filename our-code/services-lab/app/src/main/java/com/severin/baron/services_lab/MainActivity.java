@@ -86,12 +86,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private void getActivityType(){
         //TODO: change to relevant permissions
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, ACTIVITY_CODE);
-            return;
-        }
+//        if (ActivityCompat.checkSelfPermission(this, com.google.android.gms.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//
+//                    new String[]{com.google.android.gms.permission.ACTIVITY_RECOGNITION}, ACTIVITY_CODE);
+//            return;
+//        }
     }
 
     private void getWeather(){
