@@ -2,5 +2,6 @@
 <resources>
 
     <string name="MAPS_API_KEY">AIzaSyBACXXndnjQU9sdJWwyNq9qaF05pHoz10A</string>
+    <string name="AWARENESS_API_KEY">AIzaSyBuz05Evv3NdTAMSo_fi7rLrxzZ0NuEgdE</string>
 
 </resources>
