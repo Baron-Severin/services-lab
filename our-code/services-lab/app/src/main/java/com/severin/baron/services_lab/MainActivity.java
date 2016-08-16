@@ -52,17 +52,57 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
+                break;
+            case ACTIVITY_CODE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getActivityType();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                break;
+            case WEATHER_CODE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getWeather();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                break;
         }
     }
 
     private void getNearbyPlaces(){
+        //TODO: change to relevant permissions
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
+
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, NEARBY_CODE);
             return;
         }
     }
 
+    private void getActivityType(){
+        //TODO: change to relevant permissions
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, ACTIVITY_CODE);
+            return;
+        }
+    }
+
+    private void getWeather(){
+        //TODO: change to relevant permissions
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, WEATHER_CODE);
+            return;
+        }
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
