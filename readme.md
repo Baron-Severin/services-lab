@@ -38,8 +38,8 @@ An Android Studio project, with no particular format. It just has to meet the re
 
 #### Hint
 
-* Remember each button click returns a result that can be stored in two textviews...
-* You might need to connect the Service to the Activity in some way to get this to work...
+* Remember each button click returns a result that can be stored in two textviews.
+* You might need to connect the Service to the Activity in some way to get this project working.
 
 #### Resources
 
