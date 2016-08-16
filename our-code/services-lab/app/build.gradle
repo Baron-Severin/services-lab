@@ -28,4 +28,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:9.4.0'
     // Google Fit
     compile 'com.google.android.gms:play-services-fitness:9.4.0'
+    // Google Awareness
+    compile 'com.google.android.gms:play-services-contextmanager:9.4.0'
 }
