@@ -11,7 +11,7 @@ creator: Brad Zimmerman (SEA)
 
 #### Introduction
 
-Attached with this lab you will see the solution code for the previous instructor's lab. It describes a music player which boots up on load and allows the user to pause or play the music whenever they desire. While that's all well and good, we need to use this service in a slightly different way. Taking a page from the lesson yesterday, you will be building an app with a service that connects to the google play services. Use the hints you can get about the Android Service functionality from the solution code as well as the WWWs (World Wide Webs) to make an app with the following functions:
+Attached with this lab you will see the solution code from the previous instructor's lab. It describes a music player which allows the user to pause or play the music whenever they desire. While that's all well and good, we need to use this service in a slightly different way. Taking a page from the lesson yesterday, you will be building an app with an Android Service that connects to the Google Play Services. Use the hints you can get about the Android Service functionality from the solution code as well as the WWWs (World Wide Webs) to make an app with the following functions:
 
 * Allows the user to see the weather conditions and temperature when a button is pushed
 * Allows the user to see their current level of activity (Walking, Running, Biking, etc) as well as the likelyness of it being correct when a button is pushed
@@ -21,15 +21,15 @@ Attached with this lab you will see the solution code for the previous instructo
 
 > ***Note:*** _This should be done in pairs._
 
-* Your app must implement the 3 google play services described above
-* Your app must implement those google play services inside an Android Service
+* Your app must implement the 3 Google Play Services described above
+* Your app must implement those Google Play Services inside an Android Service
 * Your app must update a textview(s) with the new information when a button is clicked
 
 **Bonus:**
 
-* Add additional calls to google play services
-* Put you service in it's own seperate process
-* Have your service update your Activity no matter if a button is selected or not
+* Add additional calls to Google Play Services
+* Put you Android Service in it's own seperate process
+* Have your Android Service update your Activity no matter if a button is selected or not
 
 #### Deliverable
 
@@ -38,7 +38,7 @@ An Android Studio project, with no particular format. It just has to meet the re
 #### Hint
 
 * Remember each button click returns a result that can be stored in two textviews.
-* You might need to connect the Service to the Activity in some way to get this project working.
+* You might need to connect the Android Service to the Activity in some way to get this project working.
 
 #### Resources
 
