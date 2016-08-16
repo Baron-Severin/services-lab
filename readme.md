@@ -13,10 +13,9 @@ creator: Brad Zimmerman (SEA)
 
 * Attached with this lab you will see the solution code for the previous instructor's lab. It describes a music player which boots up on load and allows the user to pause or play the music whenever they desire. While that's all well and good, we need to use this service in a slightly different way. Taking a page from the lesson yesterday, you will be building an app with a service that connects to the google play services. Use the hints you can get about the Android Service functionality from the solution code as well as the WWWs (World Wide Webs) to make an app with the following functions:
 
-* 
-  * Allows the user to see the weather conditions and temperature when a button is pushed
-  * Allows the user to see their current level of activity (Walking, Running, Biking, etc) as well as the likelyness of it being correct when a button is pushed
-  * Allows the user to see the top 2 nearest places (restaurants, museums, etc) when a button is pushed
+* Allows the user to see the weather conditions and temperature when a button is pushed
+* Allows the user to see their current level of activity (Walking, Running, Biking, etc) as well as the likelyness of it being correct when a button is pushed
+* Allows the user to see the top 2 nearest places (restaurants, museums, etc) when a button is pushed
 
 #### Requirements
 
