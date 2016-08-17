@@ -33,13 +33,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks {
     GoogleApiClient mGoogleApiClient;
     Button activityButton, weatherButton, nearbyButton;
-    TextView activityTextView, weatherTextView;
+    TextView activityTextView, weatherTextView, nearbyTextView;
 
     public static final int ACTIVITY_CODE = 123;
     public static final int WEATHER_CODE = 128;
     public static final int NEARBY_CODE = 137;
 
     private static final List BEACON_TYPE_FILTERS = Arrays.asList(
+            //TODO: Fill this with actual attachments using nearby messages api
             BeaconState.TypeFilter.with(
                     "my.beacon.namespace",
                     "my-attachment-type"),
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         activityTextView = (TextView) findViewById(R.id.activity_text_view);
         weatherTextView = (TextView) findViewById(R.id.weather_text_view);
+        nearbyTextView = (TextView) findViewById(R.id.nearby_text_view);
 
         activityButton = (Button) findViewById(R.id.activity_button);
         weatherButton = (Button) findViewById(R.id.weather_button);
@@ -85,12 +87,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 getWeather();
             }
         });
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
-                .addApi(Awareness.API)
-                .build();
-        mGoogleApiClient.connect();
 
     }
 
