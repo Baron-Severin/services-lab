@@ -25,6 +25,9 @@
                    android:value="AIzaSyBuz05Evv3NdTAMSo_fi7rLrxzZ0NuEgdE"/>
         <meta-data android:name="com.google.android.nearby.messages.API_KEY"
                    android:value="AIzaSyBuz05Evv3NdTAMSo_fi7rLrxzZ0NuEgdE"/>
+        <meta-data
+            android:name="com.google.android.nearby.messages.API_KEY"
+            android:value="API_KEY" />
     </application>
     <service
         android:name=".GoogleService"
