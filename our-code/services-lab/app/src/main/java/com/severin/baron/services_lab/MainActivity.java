@@ -18,6 +18,8 @@ import com.google.android.gms.awareness.Awareness;
 import com.google.android.gms.awareness.snapshot.BeaconStateResult;
 import com.google.android.gms.awareness.snapshot.DetectedActivityResult;
 import com.google.android.gms.awareness.state.BeaconState;
+import com.google.android.gms.awareness.snapshot.WeatherResult;
+import com.google.android.gms.awareness.state.Weather;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -31,7 +33,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks {
     GoogleApiClient mGoogleApiClient;
     Button activityButton, weatherButton, nearbyButton;
-    TextView activityTextView;
+    TextView activityTextView, weatherTextView;
 
     public static final int ACTIVITY_CODE = 123;
     public static final int WEATHER_CODE = 128;
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         mGoogleApiClient.connect();
 
         activityTextView = (TextView) findViewById(R.id.activity_text_view);
+        weatherTextView = (TextView) findViewById(R.id.weather_text_view);
 
         activityButton = (Button) findViewById(R.id.activity_button);
         weatherButton = (Button) findViewById(R.id.weather_button);
@@ -76,6 +79,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
+        weatherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getWeather();
+            }
+        });
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this,this)
+                .addApi(Awareness.API)
+                .build();
+        mGoogleApiClient.connect();
 
     }
 
@@ -153,12 +168,33 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private void getWeather(){
         //TODO: change to relevant permissions
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
+      if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, WEATHER_CODE);
+      }else{
+        Awareness.SnapshotApi.getWeather(mGoogleApiClient)
+        .setResultCallback(new ResultCallback<WeatherResult>() {
+          @Override
+          public void onResult(@NonNull WeatherResult weatherResult) {
+            if (weatherResult.getStatus().isSuccess()) {
+              Weather weather = weatherResult.getWeather();
 
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, WEATHER_CODE);
-            return;
-        }
+              int[] conditions = weather.getConditions();
+              StringBuilder stringBuilder = new StringBuilder();
+              if (conditions.length > 0) {
+                for (int i = 0; i < conditions.length; i++) {
+                  if (i > 0) {
+                    stringBuilder.append(", ");
+                  }
+                  stringBuilder.append(retrieveConditionString(conditions[i]));
+                }
+              }
+              weatherTextView.setText(getString(R.string.text_conditions,
+                stringBuilder.toString()));
+            }
+          }
+        });
+      }
+
     }
 
     @Override
@@ -175,5 +211,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
+  private String retrieveConditionString(int condition) {
+    switch (condition) {
+      case Weather.CONDITION_CLEAR:
+        return getString(R.string.condition_clear);
+      case Weather.CONDITION_CLOUDY:
+        return getString(R.string.condition_cloudy);
+      case Weather.CONDITION_FOGGY:
+        return getString(R.string.condition_foggy);
+      case Weather.CONDITION_HAZY:
+        return getString(R.string.condition_hazy);
+      case Weather.CONDITION_ICY:
+        return getString(R.string.condition_icy);
+      case Weather.CONDITION_RAINY:
+        return getString(R.string.condition_rainy);
+      case Weather.CONDITION_SNOWY:
+        return getString(R.string.condition_snowy);
+      case Weather.CONDITION_STORMY:
+        return getString(R.string.condition_stormy);
+      case Weather.CONDITION_WINDY:
+        return getString(R.string.condition_windy);
+      default:
+        return getString(R.string.condition_unknown);
+    }
+  }
 }
