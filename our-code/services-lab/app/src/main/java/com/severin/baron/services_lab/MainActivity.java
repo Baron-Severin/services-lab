@@ -26,7 +26,13 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessageListener;
+import com.google.android.gms.nearby.messages.Strategy;
+import com.google.android.gms.nearby.messages.SubscribeOptions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,30 +40,60 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     GoogleApiClient mGoogleApiClient;
     Button activityButton, weatherButton, nearbyButton;
     TextView activityTextView, weatherTextView, nearbyTextView;
+    MessageListener mMessageListener;
+    List<String> mNearbyMessages;
 
     public static final int ACTIVITY_CODE = 123;
     public static final int WEATHER_CODE = 128;
     public static final int NEARBY_CODE = 137;
 
-    private static final List BEACON_TYPE_FILTERS = Arrays.asList(
-            //TODO: Fill this with actual attachments using nearby messages api
-            BeaconState.TypeFilter.with(
-                    "my.beacon.namespace",
-                    "my-attachment-type"),
-            BeaconState.TypeFilter.with(
-                    "my.other.namespace",
-                    "my-attachment-type"));
+    private String TAG = getClass().getCanonicalName();
+
+    private static List BEACON_TYPE_FILTERS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mNearbyMessages = new ArrayList<>();
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this,this)
                 .addApi(Awareness.API)
+                .addApi(Nearby.MESSAGES_API)
                 .build();
         mGoogleApiClient.connect();
+
+        mMessageListener = new MessageListener() {
+            @Override
+            public void onFound(Message message) {
+                Log.i(TAG, "Found a message!");
+                String messageAsString = new String(message.getContent());
+                mNearbyMessages.add(messageAsString);
+                if (mNearbyMessages.size() > 1) {
+                    unsubscribe();
+                    BEACON_TYPE_FILTERS = Arrays.asList(
+                            BeaconState.TypeFilter.with(
+                                    //TODO: Put in mNearbyMessage.get(0)
+                                    "my.beacon.namespace",
+                                    "my-attachment-type"),
+                            BeaconState.TypeFilter.with(
+                                    //TODO: Put in mNearbyMessage.get(1)
+                                    "my.other.namespace",
+                                    "my-attachment-type"));
+                    //TODO: Uncomment out the below once I've figured out how to add the messages above!
+//                    getNearbyPlaces();
+                }
+                Log.d(TAG, "Found message: " + messageAsString);
+            }
+
+            @Override
+            public void onLost(Message message) {
+                String messageAsString = new String(message.getContent());
+                Log.d(TAG, "Lost sight of message: " + messageAsString);
+            }
+        };
 
         activityTextView = (TextView) findViewById(R.id.activity_text_view);
         weatherTextView = (TextView) findViewById(R.id.weather_text_view);
@@ -70,24 +106,58 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         nearbyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getNearbyPlaces();
+                // Non-service method
+                // Note that the getNearby method is called from the listener once two messages have been received
+                subscribe();
+
+                //Service method
+//                Intent intent = new Intent(MainActivity.this, GoogleService.class);
+//                intent.putExtra(GoogleService.EXTRA,GoogleService.NEARBY);
+//                startService(intent);
+                //TODO: Set nearbyTextView after service ends
             }
         });
 
         activityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Non-service method
                 getActivityType();
+
+                //Service method
+//                Intent intent = new Intent(MainActivity.this, GoogleService.class);
+//                intent.putExtra(GoogleService.EXTRA,GoogleService.ACTIVITY);
+//                startService(intent);
+                //TODO: Set activityTextView after service ends
             }
         });
 
         weatherButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Non-service method
                 getWeather();
+
+                //Service method
+//                Intent intent = new Intent(MainActivity.this, GoogleService.class);
+//                intent.putExtra(GoogleService.EXTRA,GoogleService.WEATHER);
+//                startService(intent);
+                //TODO: Set weatherTextView after service ends
             }
         });
 
+    }
+
+    private void subscribe() {
+        Log.i(TAG, "Subscribing.");
+        SubscribeOptions options = new SubscribeOptions.Builder()
+                .build();
+        Nearby.Messages.subscribe(mGoogleApiClient, mMessageListener, options);
+    }
+
+    private void unsubscribe() {
+        Log.i(TAG, "Unsubscribing.");
+        Nearby.Messages.unsubscribe(mGoogleApiClient, mMessageListener);
     }
 
     @Override
@@ -97,27 +167,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getNearbyPlaces();
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
                 break;
             case ACTIVITY_CODE:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getActivityType();
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
                 break;
             case WEATHER_CODE:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getWeather();
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
                 break;
         }
@@ -163,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     private void getWeather(){
-        //TODO: change to relevant permissions
       if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, WEATHER_CODE);
       }else{
