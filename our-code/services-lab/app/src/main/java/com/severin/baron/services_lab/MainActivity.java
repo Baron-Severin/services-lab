@@ -15,13 +15,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.awareness.Awareness;
+import com.google.android.gms.awareness.snapshot.BeaconStateResult;
 import com.google.android.gms.awareness.snapshot.DetectedActivityResult;
+import com.google.android.gms.awareness.state.BeaconState;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.LocationServices;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,GoogleApiClient.ConnectionCallbacks {
     GoogleApiClient mGoogleApiClient;
@@ -32,10 +37,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public static final int WEATHER_CODE = 128;
     public static final int NEARBY_CODE = 137;
 
+    private static final List BEACON_TYPE_FILTERS = Arrays.asList(
+            BeaconState.TypeFilter.with(
+                    "my.beacon.namespace",
+                    "my-attachment-type"),
+            BeaconState.TypeFilter.with(
+                    "my.other.namespace",
+                    "my-attachment-type"));
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this,this)
+                .addApi(Awareness.API)
+                .build();
+        mGoogleApiClient.connect();
 
         activityTextView = (TextView) findViewById(R.id.activity_text_view);
 
@@ -43,18 +62,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         weatherButton = (Button) findViewById(R.id.weather_button);
         nearbyButton = (Button) findViewById(R.id.nearby_button);
 
+        nearbyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getNearbyPlaces();
+            }
+        });
+
         activityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivityType();
             }
         });
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
-                .addApi(Awareness.API)
-                .build();
-        mGoogleApiClient.connect();
 
 
     }
@@ -93,13 +113,25 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     private void getNearbyPlaces(){
-        //TODO: change to relevant permissions
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, NEARBY_CODE);
-            return;
         }
+        Awareness.SnapshotApi.getBeaconState(mGoogleApiClient,BEACON_TYPE_FILTERS)
+                .setResultCallback(new ResultCallback<BeaconStateResult>() {
+                    @Override
+                    public void onResult(@NonNull BeaconStateResult beaconStateResult) {
+                        if (!beaconStateResult.getStatus().isSuccess()) {
+                            Log.i("MATT-TEST ", "beacon state result unsuccessful");
+                            return;
+                        }
+                        Log.i("MATT-TEST ", "beacon state result successful");
+                        BeaconState beacy = beaconStateResult.getBeaconState();
+                        List<BeaconState.BeaconInfo> beacyInfo = beacy.getBeaconInfo();
+                        int i = beacyInfo.size();
+
+                    }
+                });
     }
 
     private void getActivityType(){
