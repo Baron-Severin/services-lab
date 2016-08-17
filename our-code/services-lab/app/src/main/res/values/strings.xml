@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">services-lab</string>
+    <string name="text_conditions">Conditions: %s</string>
+    <string name="condition_unknown">Unknown</string>
+    <string name="condition_clear">Clear</string>
+    <string name="condition_cloudy">Cloudy</string>
+    <string name="condition_foggy">Foggy</string>
+    <string name="condition_hazy">Hazy</string>
+    <string name="condition_icy">Icy</string>
+    <string name="condition_rainy">Rainy</string>
+    <string name="condition_snowy">Snowy</string>
+    <string name="condition_stormy">Stormy</string>
+    <string name="condition_windy">Windy</string>
 </resources>
